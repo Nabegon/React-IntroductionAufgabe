@@ -1,0 +1,20 @@
+.task-wrap {
+  background-color: #282c34;
+  margin: 0.8em 0.5em;
+  padding-left: 0.5em;
+}
+  
+.task-button {
+  background: transparent;
+  border-radius: 5px;
+  border: 2px solid #282c34;
+  margin: 0.5em 1em;
+  padding: 0.25em 1em;
+  background-color: #539b6c;
+  font-size: 0.5em;
+  color: white;
+}
+  
+.task-button:hover {
+  background-color: #72eb7a; 
+}
