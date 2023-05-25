@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 
 
@@ -156,7 +156,22 @@ function H4({ length, task,superTask }) {
 function Task({ task, length, superTaskId }) {
   // interactivity and state-managment:
   const [showMore, setShowMore] = useState(false);
+  const [checked, setChecked] = useState(false);
 
+  const loadCheckedStatetus = () => {
+    const savedChecked = localStorage.getItem(`task-${task.id}`);
+    if (savedChecked) {
+      setChecked(JSON.parse(savedChecked));
+    }
+  };
+
+  const saveCheckedStatetus = () => {
+    localStorage.setItem(`task-${task.id}`, JSON.stringify(checked));
+  };
+
+  useEffect(loadCheckedStatetus, [task.id]);
+  useEffect(saveCheckedStatetus, [task.id, checked]);
+  
   function handleMoreClick() {
     setShowMore(!showMore);
   }
@@ -176,6 +191,11 @@ function Task({ task, length, superTaskId }) {
           content={task.content}
         ></Content>
       )}
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => setChecked(e.target.checked)}
+      />
     </StyledWrap>
   );
 }
