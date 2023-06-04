@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 
 // global styles
 import "./App.css";
 // (styled) sub components
 import Task from "./Task.js";
-
+import TaskForm from "./TaskForm.js";
 // data
 import { exercises } from "./data.js";
 
@@ -56,12 +56,13 @@ const StyledH4 = styled.h4`
  *
  * The words superTask and exercise are used interchangeable
  */
-function TaskArea({ subtasks, superTaskId }) {
+function TaskArea({ subtasks, superTaskId, onCheckboxChange }) {
   const listItems = subtasks.map((task) => (
     <Task
       task={task}
       length={subtasks.length}
       superTaskId={superTaskId}
+      onCheckboxChange={onCheckboxChange}
       key={task.id}
     ></Task>
   ));
@@ -86,10 +87,53 @@ function App() {
 
   // init the list-state:
   // we'll use that more sensibly later
+  // const [list, setList] = useState([]);
+  // if(list.length===0)setList(exercises);
+
+  // const storedList = localStorage.getItem("list");
+  // const initialList = storedList ? <JSON.parse(storedList) : exercises;
+  // const [list, setList] = useState(initialList);
+  
   const [list, setList] = useState([]);
-  if(list.length===0)setList(exercises);
 
+  const onCheckboxChange = (taskId, isChecked) => {
+    const updatedList = list.map((exercise) => {
+      const updatedSubtasks = exercise.subtasks.map((subtask) => {
+        if (subtask.id === taskId) {
+          return { ...subtask, done: isChecked };
+        }
+        return subtask;
+      });
+      return { ...exercise, subtasks: updatedSubtasks };
+    });
 
+    setList(updatedList);
+
+    localStorage.setItem('list', JSON.stringify(updatedList));
+  };
+
+  const addTask = (task) => {
+    const storedTask = task;
+
+    const newList = [...list];
+    newList.push(storedTask);
+    console.log("newList, App.js: ", newList);
+    const newTask = { ...task, done: false };
+    console.log("newTask, App.js: ", newTask);
+
+    if (task.subtasks.length === 0) {
+      storedTask.subtasks = [];
+      newList.push(storedTask);
+    }
+
+    setList(newList);
+    localStorage.setItem("list", JSON.stringify(newList));
+  };
+  useEffect(() => {
+    const storedList = localStorage.getItem('list');
+    const initialList = storedList ? JSON.parse(storedList) : exercises;
+    setList(initialList);
+  }, []);
   /*
    * for each exercise we create a title and task-area named TaskArea
    * all wrapped within a styled div
@@ -100,6 +144,7 @@ function App() {
    * NOTE: everytime list gets updated, does each child gets rerendered?
    *       how the fiber-recons. is acting here?
    */
+  console.log("list: ", list);
   const listItems = list.map((exe) => (
     <StyledDiv key={exe.id}>
       <h2>
@@ -111,6 +156,8 @@ function App() {
       <TaskArea
         subtasks={exe.subtasks}
         superTaskId={exe.id}
+        onCheckboxChange={onCheckboxChange}
+        key={exe.id}
       ></TaskArea>
     </StyledDiv>
   ));
@@ -129,6 +176,7 @@ function App() {
         <p>Surprise: some exercises will adress gaps within this version.</p>
       </header>
       <main>{listItems}</main>
+      <TaskForm onAddTask={addTask}></TaskForm>
     </div>
   );
 }
