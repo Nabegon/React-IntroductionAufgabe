@@ -153,28 +153,25 @@ function H4({ length, task,superTask }) {
 * this state belongs to each subtask, since this information 
 * is specific to the single subtask
 */
-function Task({ task, length, superTaskId }) {
+function Task({ task, length, superTaskId, onCheckboxChange, handleMoreClick }) {
   // interactivity and state-managment:
   const [showMore, setShowMore] = useState(false);
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(task.done);
 
-  const loadCheckedStatetus = () => {
-    const savedChecked = localStorage.getItem(`task-${task.id}`);
-    if (savedChecked) {
-      setChecked(JSON.parse(savedChecked));
-    }
-  };
-
-  const saveCheckedStatetus = () => {
-    localStorage.setItem(`task-${task.id}`, JSON.stringify(checked));
-  };
-
-  useEffect(loadCheckedStatetus, [task.id]);
-  useEffect(saveCheckedStatetus, [task.id, checked]);
-  
   function handleMoreClick() {
     setShowMore(!showMore);
   }
+
+  const handleCheckboxChange = (e) => {
+    const isChecked = e.target.checked;
+    setChecked(isChecked);
+    onCheckboxChange(task.id, isChecked);
+  };
+
+  useEffect(() => {
+    localStorage.setItem(`task-${task.id}`, JSON.stringify(checked));
+  }, [task.id, checked]);
+
   return (
     <StyledWrap key={task.title + " " + task.id}>
       <H4
@@ -194,7 +191,7 @@ function Task({ task, length, superTaskId }) {
       <input
         type="checkbox"
         checked={checked}
-        onChange={(e) => setChecked(e.target.checked)}
+        onChange={handleCheckboxChange}
       />
     </StyledWrap>
   );
