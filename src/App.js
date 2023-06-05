@@ -88,6 +88,9 @@ function App() {
   // init the list-state:
   // we'll use that more sensibly later
   const [list, setList] = useState([]);
+  // to get changes of the checkboxes
+  // taskId is for the task for which the checkbox has been changed
+  // isChecked is for done: true, done: false. Boolean
   const onCheckboxChange = (taskId, isChecked) => {
     const updatedList = list.map((exercise) => {
       const updatedSubtasks = exercise.subtasks.map((subtask) => {
@@ -105,7 +108,7 @@ function App() {
   };
 
   // To keep checkbox status, I need this useEffect.
-  // When the user refresh the browser, this useEffect checkes if any changes stored.
+  // When the user refreshes the browser, this useEffect checkes if any changes stored.
   useEffect(() => {
     const storedList = localStorage.getItem('list');
     const initialList = storedList ? JSON.parse(storedList) : exercises;
@@ -126,7 +129,7 @@ function App() {
     <StyledDiv key={exe.id}>
       <h2>
         Exercise {exe.id}: {exe.title}{" "}
-        {exe.subtasks.every((currentExe) => currentExe.done) && "✔"}
+        {exe.subtasks.every((subtask) => subtask.done) ? "✔" : ""}
       </h2>
       {exe.subtitle ? <StyledH4>{exe.subtitle}</StyledH4> : ""}
 
