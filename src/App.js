@@ -57,6 +57,7 @@ const StyledH4 = styled.h4`
  * The words superTask and exercise are used interchangeable
  */
 function TaskArea({ subtasks, superTaskId, onCheckboxChange }) {
+  console.log("subtasks", subtasks);
   const listItems = subtasks.map((task) => (
     <Task
       task={task}

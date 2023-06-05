@@ -103,7 +103,7 @@ function ItemType({ item }) {
 * component-generation wrt. subtask-contents
 * to get a specific ItemType wrt. to the subtask contents
 */
-function Content({ content }) {
+function Content({ content = [] }) {
   const listItems = content.map((item, index) => (
     <ItemType item={item} key={index}></ItemType>
   ));
