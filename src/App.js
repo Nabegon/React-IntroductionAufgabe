@@ -104,6 +104,8 @@ function App() {
     localStorage.setItem('list', JSON.stringify(updatedList));
   };
 
+  // To keep checkbox status, I need this useEffect.
+  // When the user refresh the browser, this useEffect checkes if any changes stored.
   useEffect(() => {
     const storedList = localStorage.getItem('list');
     const initialList = storedList ? JSON.parse(storedList) : exercises;

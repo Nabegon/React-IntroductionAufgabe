@@ -162,15 +162,12 @@ function Task({ task, length, superTaskId, onCheckboxChange, handleMoreClick }) 
     setShowMore(!showMore);
   }
 
+  // I thought, that I need handleCheckboxChange() to detect any changes of checkboxes.
   const handleCheckboxChange = (e) => {
     const isChecked = e.target.checked;
     setChecked(isChecked);
     onCheckboxChange(task.id, isChecked);
   };
-
-  useEffect(() => {
-    localStorage.setItem(`task-${task.id}`, JSON.stringify(checked));
-  }, [task.id, checked]);
 
   return (
     <StyledWrap key={task.title + " " + task.id}>
